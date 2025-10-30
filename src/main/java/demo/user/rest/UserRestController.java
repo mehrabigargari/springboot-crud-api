@@ -29,9 +29,6 @@ public class UserRestController {
 
     @GetMapping("/user/{userId}")
     public User getUser(@PathVariable int userId){
-        if(userId>=userService.findAll().size() || userId<0){
-            throw new UserException("There is not any user with this id.");
-        }
         return userService.findById(userId);
     }
 
@@ -48,13 +45,10 @@ public class UserRestController {
 
     @PatchMapping("/user/{userId}")
     public User partiallyUpdate(@PathVariable int userId, @RequestBody Map<String, Object> patchPayload) {
-        if(userId>userService.findAll().size() || userId<0){
-            throw new UserException("There is not any user with this id.");
-        }
+        User tempUser = userService.findById(userId);
         if(patchPayload.containsKey("id")){
             throw new RuntimeException("The id field is now allowed.");
         }
-        User tempUser = userService.findById(userId);
         return userService.save(apply(tempUser, patchPayload));
     }
 
