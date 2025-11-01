@@ -17,9 +17,9 @@ public class UserRestController {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public UserRestController(UserService userService, ObjectMapper objectMapper1) {
+    public UserRestController(UserService userService, ObjectMapper objectMapper) {
         this.userService = userService;
-        this.objectMapper = objectMapper1;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/user")
@@ -57,5 +57,16 @@ public class UserRestController {
         ObjectNode patchNode = objectMapper.convertValue(patchPayload,ObjectNode.class);
         userNode.setAll(patchNode);
         return objectMapper.convertValue(userNode,User.class);
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public String deleteUser(@PathVariable int userId){
+        try {
+            userService.deleteById(userId);
+            return "The user deleted successfully.";
+        } catch(Exception e) {
+            throw new RuntimeException("There was an error in the delete operation.", e);
+        }
+
     }
 }
